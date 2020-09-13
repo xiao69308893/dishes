@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.dishes.mapper.DishesMapper">
+    
+    <resultMap type="Dishes" id="DishesResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="price"    column="price"    />
+        <result property="type"    column="type"    />
+        <result property="image"    column="image"    />
+        <result property="depict"    column="depict"    />
+        <result property="remake"    column="remake"    />
+        <result property="stock"    column="stock"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectDishesVo">
+        select id, name, price, type, image, depict, remake, stock, status from dishes
+    </sql>
+
+    <select id="selectDishesList" parameterType="Dishes" resultMap="DishesResult">
+        <include refid="selectDishesVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="image != null  and image != ''"> and image = #{image}</if>
+            <if test="depict != null  and depict != ''"> and depict = #{depict}</if>
+            <if test="remake != null  and remake != ''"> and remake = #{remake}</if>
+            <if test="stock != null "> and stock = #{stock}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectDishesById" parameterType="Long" resultMap="DishesResult">
+        <include refid="selectDishesVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDishes" parameterType="Dishes">
+        insert into dishes
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="price != null">price,</if>
+            <if test="type != null">type,</if>
+            <if test="image != null">image,</if>
+            <if test="depict != null">depict,</if>
+            <if test="remake != null">remake,</if>
+            <if test="stock != null">stock,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="price != null">#{price},</if>
+            <if test="type != null">#{type},</if>
+            <if test="image != null">#{image},</if>
+            <if test="depict != null">#{depict},</if>
+            <if test="remake != null">#{remake},</if>
+            <if test="stock != null">#{stock},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDishes" parameterType="Dishes">
+        update dishes
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="depict != null">depict = #{depict},</if>
+            <if test="remake != null">remake = #{remake},</if>
+            <if test="stock != null">stock = #{stock},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDishesById" parameterType="Long">
+        delete from dishes where id = #{id}
+    </delete>
+
+    <delete id="deleteDishesByIds" parameterType="String">
+        delete from dishes where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
